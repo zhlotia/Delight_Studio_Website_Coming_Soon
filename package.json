@@ -1,0 +1,15 @@
+{
+  "name": "delight-studio-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Delight Studio photobooth pre-launch website",
+  "scripts": {
+    "serve": "serve -l 4321 .",
+    "test:a11y": "start-server-and-test serve http://localhost:4321/index.html pa11y-ci"
+  },
+  "devDependencies": {
+    "pa11y-ci": "^3.1.0",
+    "serve": "^14.2.4",
+    "start-server-and-test": "^2.0.10"
+  }
+}

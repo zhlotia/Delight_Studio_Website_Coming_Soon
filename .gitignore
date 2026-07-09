@@ -1,0 +1,10 @@
+node_modules/
+npm-debug.log*
+.DS_Store
+
+# Claude Code machine-local settings (not shared)
+.claude/settings.local.json
+
+# Private brand source files — kept local, not published
+*.ai
+*.docx

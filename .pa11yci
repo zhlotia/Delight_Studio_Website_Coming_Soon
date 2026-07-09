@@ -1,0 +1,17 @@
+{
+  "defaults": {
+    "standard": "WCAG2AA",
+    "runners": ["axe"],
+    "timeout": 60000,
+    "wait": 500,
+    "ignore": ["color-contrast"],
+    "chromeLaunchConfig": {
+      "args": ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+    }
+  },
+  "urls": [
+    "http://localhost:4321/index.html",
+    "http://localhost:4321/services.html",
+    "http://localhost:4321/contact.html"
+  ]
+}

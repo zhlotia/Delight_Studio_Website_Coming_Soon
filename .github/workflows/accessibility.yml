@@ -1,0 +1,31 @@
+name: Accessibility (pa11y)
+
+# Scans the site against WCAG 2 AA on every push/PR to main, and on demand.
+# The runner serves the static files locally and pa11y-ci scans them — no
+# deployed URL required. The job fails if any accessibility errors are found.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  pa11y:
+    name: pa11y-ci (WCAG 2 AA)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run accessibility scan
+        run: npm run test:a11y
