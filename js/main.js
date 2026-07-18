@@ -42,59 +42,42 @@
     }
   }
 
-  /* ---------- Contact form -> mailto ---------- */
+  /* ---------- Contact form -> Google Apps Script (emails the studio) ---------- */
   var form = document.getElementById("contact-form");
   if (form) {
+    var ENDPOINT = "https://script.google.com/macros/s/AKfycbyBHadvm8M2d-JvRg-LWXyb9hAn5wMkO7amRfijP6D-cTjEbiEKgwTwtZLASNn9lpQhwQ/exec";
+    var status = document.getElementById("form-status");
+    var submitBtn = form.querySelector('button[type="submit"]');
+
     form.addEventListener("submit", function (ev) {
       ev.preventDefault();
-      var data = new FormData(form);
-      var get = function (k) { return (data.get(k) || "").toString().trim(); };
 
-      var name = get("name");
-      var email = get("email");
-      var phone = get("phone");
-      var eventType = get("event_type");
-      var eventDate = get("event_date");
-      var venueName = get("venue_name");
-      var venueAddress = get("venue_address");
-      var pkg = get("package");
-      var message = get("message");
+      // Honeypot: bots fill the hidden "company" field — silently drop them.
+      var hp = form.querySelector('input[name="company"]');
+      if (hp && hp.value.trim() !== "") { return; }
 
-      var subject = "New inquiry — " + (eventType || "Event") + (name ? " · " + name : "");
+      var btnLabel = submitBtn ? submitBtn.textContent : "";
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Sending…"; }
+      if (status) { status.className = "form-note"; status.textContent = "Sending your inquiry…"; }
 
-      var lines = [
-        "Hi Delight Studio team,",
-        "",
-        "I'd love to learn more about your photobooth packages.",
-        "",
-        "Name:        " + name,
-        "Email:       " + email,
-        "Phone:       " + phone,
-        "Event type:  " + eventType,
-        "Event date:  " + eventDate,
-        "Venue name:  " + venueName,
-        "Venue address: " + venueAddress,
-        "Interested in: " + pkg,
-        "",
-        "Details:",
-        message,
-        "",
-        "Thank you!",
-        name
-      ];
-
-      var href =
-        "mailto:hello@thedelightstudio.com" +
-        "?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(lines.join("\r\n"));
-
-      window.location.href = href;
-
-      var note = document.getElementById("form-status");
-      if (note) {
-        note.textContent = "Opening your email app… if nothing happens, email us directly at hello@thedelightstudio.com";
-        note.style.color = "var(--gold-soft)";
-      }
+      // URL-encoded body (not multipart) so Apps Script reliably reads e.parameter
+      fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: new URLSearchParams(new FormData(form)) })
+        .then(function () {
+          form.reset();
+          if (status) {
+            status.className = "form-note is-success";
+            status.textContent = "Thank you — your inquiry is on its way. We'll be in touch soon.";
+          }
+          if (submitBtn) { submitBtn.textContent = "Sent ✓"; }
+        })
+        .catch(function () {
+          if (status) {
+            status.className = "form-note is-error";
+            status.innerHTML = "Sorry, something went wrong. Please email us directly at " +
+              "<a href=\"mailto:hello@thedelightstudio.com\">hello@thedelightstudio.com</a>.";
+          }
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = btnLabel; }
+        });
     });
   }
 })();

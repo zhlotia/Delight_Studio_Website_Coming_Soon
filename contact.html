@@ -91,6 +91,11 @@
           </aside>
 
           <form class="card reveal" id="contact-form">
+            <!-- anti-spam honeypot: hidden from people; if a bot fills it, we drop the submission -->
+            <div class="hp" aria-hidden="true">
+              <label for="company">Company (leave blank)</label>
+              <input type="text" id="company" name="company" tabindex="-1" autocomplete="off" />
+            </div>
             <div class="field">
               <label for="name">Full name</label>
               <input type="text" id="name" name="name" placeholder="Jane Doe" required autocomplete="name" />
@@ -153,7 +158,7 @@
             </div>
 
             <button type="submit" class="btn" style="width:100%; justify-content:center;">Send inquiry</button>
-            <p class="form-note" id="form-status">This opens your email app with the details ready to send.</p>
+            <p class="form-note" id="form-status" role="status" aria-live="polite">We'll get your inquiry by email and reply personally — usually within a day.</p>
           </form>
 
         </div>
